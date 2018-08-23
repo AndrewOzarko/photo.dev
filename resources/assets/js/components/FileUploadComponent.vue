@@ -4,7 +4,7 @@
         <vue-dropzone id="upload" :options="config" @vdropzone-complete="afterComplete"></vue-dropzone>
         <br>
         <div v-if="seen">
-            <form method="post" action="/photo/watermark">
+            <form>
                 <input type="hidden" name="filename" :value="photo_name">
                 <div class="field">
                     <div class="control">
@@ -60,7 +60,7 @@
                     </div>
                 </div>
 
-                <button class="button is-link" type="submit">Add watermark</button>
+                <button class="button is-link" @click="sendWaterMark">Add watermark</button>
             </form>
         </div>
     </div>
@@ -95,6 +95,19 @@
                     this.photo_name = result.photo;
                 }
 
+            },
+            sendWaterMark(e) {
+                e.preventDefault();
+                axios.post('/photo/watermark', {
+                    firstName: 'Fred',
+                    lastName: 'Flintstone'
+                })
+                    .then(function (response) {
+                        console.log(response);
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
             }
         }
     }

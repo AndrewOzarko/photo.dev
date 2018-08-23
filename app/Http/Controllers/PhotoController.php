@@ -38,27 +38,9 @@ class PhotoController extends Controller
         return response()->json(['success' => true, 'photo' => $photoName], 200);
     }
 
-    public function store(Request $request)
+    public function watermark(Request $request)
     {
-        $this->validate($request,
-            [
-                'file' => 'required | mimes:jpeg,bmp,png',
-            ]
-        );
-
-        dd($request);
-
-        $photo = $request->file('file');
-        $ext = $photo->getClientOriginalExtension();
-        $photoName = md5($photo->getClientOriginalName().''.time()). ' ' . $ext;
-
-//        $photo = new Photo;
-//        $photo->photo_name = $photoName;
-//        $photo->save();
-
-        Storage::putFileAs(self::PHOTO_PATH, $photo, $photoName);
-
-        return response()->json(['success' => true], 200);
+        return $request->all();
     }
 
     public function destroy(Photo $photo)

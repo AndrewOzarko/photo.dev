@@ -34027,6 +34027,17 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 this.seen = true;
                 this.photo_name = result.photo;
             }
+        },
+        sendWaterMark: function sendWaterMark(e) {
+            e.preventDefault();
+            axios.post('/photo/watermark', {
+                firstName: 'Fred',
+                lastName: 'Flintstone'
+            }).then(function (response) {
+                console.log(response);
+            }).catch(function (error) {
+                console.log(error);
+            });
         }
     }
 });
@@ -34062,127 +34073,122 @@ var render = function() {
       _vm._v(" "),
       _vm.seen
         ? _c("div", [
-            _c(
-              "form",
-              { attrs: { method: "post", action: "/photo/watermark" } },
-              [
-                _c("input", {
-                  attrs: { type: "hidden", name: "filename" },
-                  domProps: { value: _vm.photo_name }
-                }),
+            _c("form", [
+              _c("input", {
+                attrs: { type: "hidden", name: "filename" },
+                domProps: { value: _vm.photo_name }
+              }),
+              _vm._v(" "),
+              _vm._m(0),
+              _vm._v(" "),
+              _c("div", { staticClass: "control" }, [
+                _c("label", { staticClass: "radio" }, [
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.watermark,
+                        expression: "watermark"
+                      }
+                    ],
+                    attrs: { type: "radio", name: "watermark", value: "0" },
+                    domProps: { checked: _vm._q(_vm.watermark, "0") },
+                    on: {
+                      change: function($event) {
+                        _vm.watermark = "0"
+                      }
+                    }
+                  }),
+                  _vm._v("\n                    Photo\n                ")
+                ]),
                 _vm._v(" "),
-                _vm._m(0),
-                _vm._v(" "),
+                _c("label", { staticClass: "radio" }, [
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.watermark,
+                        expression: "watermark"
+                      }
+                    ],
+                    attrs: { type: "radio", name: "watermark", value: "1" },
+                    domProps: { checked: _vm._q(_vm.watermark, "1") },
+                    on: {
+                      change: function($event) {
+                        _vm.watermark = "1"
+                      }
+                    }
+                  }),
+                  _vm._v("\n                    Text\n                ")
+                ])
+              ]),
+              _vm._v(" "),
+              _vm.watermark == 0
+                ? _c("div", { staticClass: "field" }, [_vm._m(1)])
+                : _c("div", { staticClass: "field" }, [_vm._m(2)]),
+              _vm._v(" "),
+              _c("div", { staticClass: "field" }, [
                 _c("div", { staticClass: "control" }, [
-                  _c("label", { staticClass: "radio" }, [
+                  _c("label", { staticClass: "checkbox" }, [
                     _c("input", {
                       directives: [
                         {
                           name: "model",
                           rawName: "v-model",
-                          value: _vm.watermark,
-                          expression: "watermark"
+                          value: _vm.smart_crop,
+                          expression: "smart_crop"
                         }
                       ],
-                      attrs: { type: "radio", name: "watermark", value: "0" },
-                      domProps: { checked: _vm._q(_vm.watermark, "0") },
+                      attrs: { name: "crop", value: "false", type: "checkbox" },
+                      domProps: {
+                        checked: Array.isArray(_vm.smart_crop)
+                          ? _vm._i(_vm.smart_crop, "false") > -1
+                          : _vm.smart_crop
+                      },
                       on: {
                         change: function($event) {
-                          _vm.watermark = "0"
-                        }
-                      }
-                    }),
-                    _vm._v("\n                    Photo\n                ")
-                  ]),
-                  _vm._v(" "),
-                  _c("label", { staticClass: "radio" }, [
-                    _c("input", {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.watermark,
-                          expression: "watermark"
-                        }
-                      ],
-                      attrs: { type: "radio", name: "watermark", value: "1" },
-                      domProps: { checked: _vm._q(_vm.watermark, "1") },
-                      on: {
-                        change: function($event) {
-                          _vm.watermark = "1"
-                        }
-                      }
-                    }),
-                    _vm._v("\n                    Text\n                ")
-                  ])
-                ]),
-                _vm._v(" "),
-                _vm.watermark == 0
-                  ? _c("div", { staticClass: "field" }, [_vm._m(1)])
-                  : _c("div", { staticClass: "field" }, [_vm._m(2)]),
-                _vm._v(" "),
-                _c("div", { staticClass: "field" }, [
-                  _c("div", { staticClass: "control" }, [
-                    _c("label", { staticClass: "checkbox" }, [
-                      _c("input", {
-                        directives: [
-                          {
-                            name: "model",
-                            rawName: "v-model",
-                            value: _vm.smart_crop,
-                            expression: "smart_crop"
-                          }
-                        ],
-                        attrs: {
-                          name: "crop",
-                          value: "false",
-                          type: "checkbox"
-                        },
-                        domProps: {
-                          checked: Array.isArray(_vm.smart_crop)
-                            ? _vm._i(_vm.smart_crop, "false") > -1
-                            : _vm.smart_crop
-                        },
-                        on: {
-                          change: function($event) {
-                            var $$a = _vm.smart_crop,
-                              $$el = $event.target,
-                              $$c = $$el.checked ? true : false
-                            if (Array.isArray($$a)) {
-                              var $$v = "false",
-                                $$i = _vm._i($$a, $$v)
-                              if ($$el.checked) {
-                                $$i < 0 && (_vm.smart_crop = $$a.concat([$$v]))
-                              } else {
-                                $$i > -1 &&
-                                  (_vm.smart_crop = $$a
-                                    .slice(0, $$i)
-                                    .concat($$a.slice($$i + 1)))
-                              }
+                          var $$a = _vm.smart_crop,
+                            $$el = $event.target,
+                            $$c = $$el.checked ? true : false
+                          if (Array.isArray($$a)) {
+                            var $$v = "false",
+                              $$i = _vm._i($$a, $$v)
+                            if ($$el.checked) {
+                              $$i < 0 && (_vm.smart_crop = $$a.concat([$$v]))
                             } else {
-                              _vm.smart_crop = $$c
+                              $$i > -1 &&
+                                (_vm.smart_crop = $$a
+                                  .slice(0, $$i)
+                                  .concat($$a.slice($$i + 1)))
                             }
+                          } else {
+                            _vm.smart_crop = $$c
                           }
                         }
-                      }),
-                      _vm._v(
-                        "\n                        Crop photo ? (smart crop)\n                    "
-                      )
-                    ])
+                      }
+                    }),
+                    _vm._v(
+                      "\n                        Crop photo ? (smart crop)\n                    "
+                    )
                   ])
-                ]),
-                _vm._v(" "),
-                _vm.smart_crop
-                  ? _c("div", { staticClass: "field" }, [_vm._m(3)])
-                  : _vm._e(),
-                _vm._v(" "),
-                _c(
-                  "button",
-                  { staticClass: "button is-link", attrs: { type: "submit" } },
-                  [_vm._v("Add watermark")]
-                )
-              ]
-            )
+                ])
+              ]),
+              _vm._v(" "),
+              _vm.smart_crop
+                ? _c("div", { staticClass: "field" }, [_vm._m(3)])
+                : _vm._e(),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "button is-link",
+                  on: { click: _vm.sendWaterMark }
+                },
+                [_vm._v("Add watermark")]
+              )
+            ])
           ])
         : _vm._e()
     ],
