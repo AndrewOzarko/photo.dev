@@ -13,8 +13,6 @@
 
 Route::get('/', 'PhotoController@index');
 
-
-
 Route::group(['prefix' => 'photo'], function () {
     Route::get('upload', 'PhotoController@index');
     Route::post('upload', 'PhotoController@upload');
