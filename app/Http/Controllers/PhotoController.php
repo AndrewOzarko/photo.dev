@@ -149,7 +149,7 @@ class PhotoController extends Controller
     {
         $img = Image::make(public_path() . '/storage/photo/' . $photoName);
 
-        $bgr = $this->getBackgroundImage($photoName);
+        $bgr = $this->getBackgroundImagePiece($photoName, ['start_width' => 120, 'start_height' => 120]);
         $color = ($bgr == true) ? '#000000' : '#ffffff';
 
         $img->text($waterText, 120, 120, function($font) use ($color) {
@@ -158,9 +158,46 @@ class PhotoController extends Controller
             $font->color($color);
             $font->align('center');
             $font->valign('top');
-            $font->angle(45);
+            //$font->angle(45);
         });
         $img->save(public_path() . '/storage/photo/' . $photoName);
+    }
+
+    /**
+     * Метод визначає фон куска фотки
+     * @param $photoName
+     * @return bool
+     */
+    private function getBackgroundImagePiece($photoName, array $coords)
+    {
+        $img = Image::make(public_path() . '/storage/photo/'.$photoName);
+
+        $startWidth = $coords['start_width'];
+        $startHeight = $coords['start_height'];
+        $finalWidth = $coords['start_width'] + 40;
+        $finalHeight = $startHeight + 20;
+
+        $points = [
+            'dark' => 0,
+            'light' => 0,
+        ];
+
+        for($i = $startWidth; $i < $finalWidth; $i++) {
+            for($j = $startHeight; $j < $finalHeight; $j ++) {
+                $rgb = $this->getBackgroudPixel($img->pickColor($i, $j));
+                if($rgb == true){
+                    $points['light']++;
+                }else if($rgb == false) {
+                    $points['dark']++;
+                }
+            }
+        }
+
+        $points['sum'] = $points['dark'] + $points['light'];
+        $points['dark'] = ($points['dark'] * 100) / $points['sum'];
+        $points['light'] = ($points['light'] * 100) / $points['sum'];
+
+        return ($points['dark'] < $points['light']) ? true : false;
     }
 
     /**
