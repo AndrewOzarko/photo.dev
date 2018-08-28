@@ -41,7 +41,7 @@ class PhotoController extends Controller
         $ext = $photo->getClientOriginalExtension();
         $photoName = md5($photo->getClientOriginalName().''.time()). '.' . $ext;
 
-        Photo::add(['photo_name' => $photoName]);
+        Photo::create(['photo_name' => $photoName]);
 
         Storage::putFileAs(self::PHOTO_PATH, $photo, $photoName);
 
@@ -149,8 +149,8 @@ class PhotoController extends Controller
     {
         $img = Image::make(public_path() . '/storage/photo/' . $photoName);
 
-        $rgb = $this->getBackgroud($img->pickColor(120, 120));
-        $color = ($rgb == true) ? '#000000' : '#ffffff';
+        $bgr = $this->getBackgroundImage($photoName);
+        $color = ($bgr == true) ? '#000000' : '#ffffff';
 
         $img->text($waterText, 120, 120, function($font) use ($color) {
             $font->file('fonts/Raleway-Regular.ttf');
@@ -164,12 +164,50 @@ class PhotoController extends Controller
     }
 
     /**
+     * Метод визначає фон всього зображення
+     * @param $photoName
+     * @return bool
+     */
+    private function getBackgroundImage($photoName)
+    {
+        $img = Image::make(public_path() . '/storage/photo/'.$photoName);
+
+        $startWidth = 0;
+        $startHeight = 0;
+
+        $points = [
+            'dark' => 0,
+            'light' => 0,
+        ];
+
+        $img->resize(100, 100);
+
+        for($i = 0; $i < $img->width(); $i++) {
+            for($j = 0; $j < $img->height(); $j++) {
+                $rgb = $this->getBackgroudPixel($img->pickColor($i, $j));
+                if($rgb == true){
+                    $points['light']++;
+                }else if($rgb == false) {
+                    $points['dark']++;
+                }
+            }
+        }
+
+        $points['sum'] = $points['dark'] + $points['light'];
+        $points['dark'] = ($points['dark'] * 100) / $points['sum'];
+        $points['light'] = ($points['light'] * 100) / $points['sum'];
+
+        return ($points['dark'] < $points['light']) ? true : false;
+    }
+
+
+    /**
      * Методи визначає чи світлий фон чи темний
      * @param array $rgb
      * return true - якщо фон світлий
      * return false - якщо фон темний
      */
-    private function getBackgroud(array $rgb)
+    private function getBackgroudPixel(array $rgb)
     {
         if (1 - (0.299 * $rgb[0] + 0.587 * $rgb[1] + 0.114 * $rgb[2]) / 255 < 0.5) {
             return true;
